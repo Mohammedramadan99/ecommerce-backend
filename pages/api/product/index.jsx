@@ -1,4 +1,10 @@
 import nc from "next-connect";
+import Cors from "micro-cors";
+
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
 import dbConnect from "../../../utils/db/dbConnect";
 import { disconnect } from "../../../utils/db/dbConnect";
 
@@ -11,12 +17,6 @@ import mongoose from "mongoose";
 cloudinary.config({
   cloud_name: "dtmjc8y9z",
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
-});
-import Cors from "micro-cors";
-
-const cors = Cors({
-  // origin: "*",
-  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
 });
 
 export const config = {
