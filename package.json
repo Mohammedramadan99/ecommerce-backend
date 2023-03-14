@@ -19,6 +19,7 @@
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.2.3",
     "cloudinary": "^1.35.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",

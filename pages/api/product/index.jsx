@@ -15,6 +15,10 @@ cloudinary.config({
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
 
+const cors = Cors({
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
+
 export const config = {
   api: {
     bodyParser: {
@@ -27,6 +31,7 @@ const handler = nc();
 // get all products
 handler.get(async (req, res) => {
   try {
+    await cors(req, res);
     const { db } = await dbConnect();
     const products = await Product.find();
     // await AllProducts[...products]
