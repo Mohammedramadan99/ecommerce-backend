@@ -30,8 +30,13 @@ const handler = nc();
 
 // get all products
 handler.get(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  await cors(req, res);
   try {
-    await cors(req, res);
     const { db } = await dbConnect();
     const products = await Product.find();
     // await AllProducts[...products]
