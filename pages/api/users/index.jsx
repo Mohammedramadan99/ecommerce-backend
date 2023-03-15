@@ -1,52 +1,56 @@
-import nc from 'next-connect'
+import nc from "next-connect";
 
-import db from '../../../utils/db/dbConnect'
-import cloudinary from "cloudinary"
+import db from "../../../utils/db/dbConnect";
+import cloudinary from "cloudinary";
 
-import User from "../../../Modal/userModel"
-import APIFeatures from '../../../utils/ApiFeatures';
-
-
+import User from "../../../Modal/userModel";
+import APIFeatures from "../../../utils/ApiFeatures";
+import cors from "micro-cors";
 const handler = nc();
 
-// get all products 
-handler.get(async (req, res) =>
-{
-  await db.connect();
-  try
-  {
-    const users = await User.find({})
+// get all products
+handler.get(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  await cors(req, res);
+
+  await db();
+  try {
+    const users = await User.find({});
     // await AllProducts[...products]
     res.status(201).json({
       success: true,
       users,
     });
-  } catch (err)
-  {
+  } catch (err) {
     res.status(404).json({
-      message: err.message
-    })
+      message: err.message,
+    });
   }
   await db.disconnect();
-})
+});
 
 // create product --> admin
-handler.put(async (req, res) =>
-{
+handler.put(async (req, res) => {
   await db.connect();
   // try
   // {
-  console.log(req.body)
-  const resPerPage = req.body.n ? req.body.n : 0
+  console.log(req.body);
+  const resPerPage = req.body.n ? req.body.n : 0;
 
   const productsCount = await Product.countDocuments();
-  const apiFeatures = new APIFeatures(Product.find(), req.query).search().filter();
+  const apiFeatures = new APIFeatures(Product.find(), req.query)
+    .search()
+    .filter();
   let products = await apiFeatures.query;
   let filteredProductsCount = products.length;
 
-  apiFeatures.pagination(products.length)
+  apiFeatures.pagination(products.length);
   products = await apiFeatures.query.clone();
-  const { query, paginationResult } = apiFeatures
+  const { query, paginationResult } = apiFeatures;
 
   res.status(200).json({
     success: true,
@@ -54,34 +58,29 @@ handler.put(async (req, res) =>
     // resPerPage,
     products,
     filteredProductsCount,
-    productsCount
+    productsCount,
   });
   // } catch (err)
   // {
   //   return res.status(500).json({ message: err.message });
   // }
   await db.disconnect();
-})
+});
 
-handler.post(async (req, res) =>
-{
+handler.post(async (req, res) => {
   await db.connect();
-  try
-  {
+  try {
     let images = [];
 
-    if (typeof req.body.images === "string")
-    {
+    if (typeof req.body.images === "string") {
       images.push(req.body.images);
-    } else
-    {
+    } else {
       images = req.body.images;
     }
 
     const imagesLinks = [];
 
-    for (let i = 0; i < images.length; i++)
-    {
+    for (let i = 0; i < images.length; i++) {
       const result = await cloudinary.v2.uploader.upload(images[i], {
         folder: "ecommerce",
       });
@@ -94,20 +93,19 @@ handler.post(async (req, res) =>
 
     req.body.images = imagesLinks;
     // req.body.user = req.user.id;
-    console.log(req.body)
+    console.log(req.body);
     const product = await Product.create(req.body);
 
     res.status(201).json({
       success: true,
       product,
     });
-  } catch (err)
-  {
+  } catch (err) {
     res.status(404).json({
-      message: err.message
-    })
+      message: err.message,
+    });
   }
   await db.disconnect();
-})
+});
 
-export default handler
+export default handler;

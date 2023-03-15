@@ -1,23 +1,27 @@
-import nc from 'next-connect'
+import nc from "next-connect";
 
-import db from '../../../utils/db/dbConnect'
-import cloudinary from "cloudinary"
-import User from "../../../Modal/userModel"
+import db from "../../../utils/db/dbConnect";
+import cloudinary from "cloudinary";
+import User from "../../../Modal/userModel";
+import cors from "cors";
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME ,
-  api_key: process.env.CLOUDINARY_API_KEY ,
-  api_secret: process.env.CLOUDINARY_API_SECRET ,
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const handler = nc();
 
+handler.post(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  await cors(req, res);
 
-handler.post(async (req, res) =>
-{
-  await db.connect();
-  try
-  {
+  await db();
+  try {
     const myCloud = await cloudinary.v2.uploader.upload(req.body?.images[0], {
       folder: "avatars",
     });
@@ -47,16 +51,14 @@ handler.post(async (req, res) =>
       },
     });
     res.status(200).json({
-      user
-    })
-  } catch (err)
-  {
+      user,
+    });
+  } catch (err) {
     res.status(404).json({
       success: false,
       message: err.message,
     });
   }
   await db.disconnect();
-
-})
-export default handler
+});
+export default handler;

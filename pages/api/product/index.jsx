@@ -52,81 +52,91 @@ handler.get(async (req, res) => {
   // await disconnect();
 });
 
-// handler.post(async (req, res) => {
-//   const { db } = await dbConnect();
+handler.post(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-//   console.log("pData", req.body);
-//   try {
-//     let images = [];
+  await cors(req, res);
 
-//     if (typeof req.body.images === "string") {
-//       images.push(req.body.images);
-//     } else {
-//       images = req.body.images;
-//     }
+  const { db } = await dbConnect();
+  try {
+    let images = [];
 
-//     const imagesLinks = [];
+    if (typeof req.body.images === "string") {
+      images.push(req.body.images);
+    } else {
+      images = req.body.images;
+    }
 
-//     for (let i = 0; i < images.length; i++) {
-//       const result = await cloudinary.v2.uploader.upload(images[i], {
-//         folder: "ecommerce",
-//       });
+    const imagesLinks = [];
 
-//       imagesLinks.push({
-//         public_id: result.public_id,
-//         url: result.secure_url,
-//       });
-//     }
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.v2.uploader.upload(images[i], {
+        folder: "ecommerce",
+      });
 
-//     req.body.images = imagesLinks;
-//     // req.body.user = req.user.id;
-//     console.log(req.body);
-//     const product = await Product.create(req.body);
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
 
-//     res.status(201).json({
-//       success: true,
-//       product,
-//     });
-//   } catch (err) {
-//     res.status(404).json({
-//       message: err.message,
-//     });
-//   }
-//   // await db.disconnect();
-// });
+    req.body.images = imagesLinks;
+    // req.body.user = req.user.id;
+    console.log(req.body);
+    const product = await Product.create(req.body);
 
-// // create product --> admin
-// handler.put(async (req, res) => {
-//   // try
-//   // {
-//   const { db } = await dbConnect();
-//   console.log(req.body);
-//   const resPerPage = req.body.n ? req.body.n : 0;
+    res.status(201).json({
+      success: true,
+      product,
+    });
+  } catch (err) {
+    res.status(404).json({
+      message: err.message,
+    });
+  }
+  // await db.disconnect();
+});
 
-//   const productsCount = await Product.countDocuments();
-//   const apiFeatures = new APIFeatures(Product.find(), req.query)
-//     .search()
-//     .filter();
-//   let products = await apiFeatures.query;
-//   let filteredProductsCount = products.length;
+// create product --> admin
+handler.put(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-//   apiFeatures.pagination(products.length);
-//   products = await apiFeatures.query.clone();
-//   const { query, paginationResult } = apiFeatures;
+  await cors(req, res);
 
-//   res.status(200).json({
-//     success: true,
-//     paginationResult,
-//     // resPerPage,
-//     products,
-//     filteredProductsCount,
-//     productsCount,
-//   });
-//   // } catch (err)
-//   // {
-//   //   return res.status(500).json({ message: err.message });
-//   // }
-//   // await db.disconnect();
-// });
+  const { db } = await dbConnect();
+  console.log(req.body);
+  const resPerPage = req.body.n ? req.body.n : 0;
+
+  const productsCount = await Product.countDocuments();
+  const apiFeatures = new APIFeatures(Product.find(), req.query)
+    .search()
+    .filter();
+  let products = await apiFeatures.query;
+  let filteredProductsCount = products.length;
+
+  apiFeatures.pagination(products.length);
+  products = await apiFeatures.query.clone();
+  const { query, paginationResult } = apiFeatures;
+
+  res.status(200).json({
+    success: true,
+    paginationResult,
+    // resPerPage,
+    products,
+    filteredProductsCount,
+    productsCount,
+  });
+  // } catch (err)
+  // {
+  //   return res.status(500).json({ message: err.message });
+  // }
+  // await db.disconnect();
+});
 
 export default handler;

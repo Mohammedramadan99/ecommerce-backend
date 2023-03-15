@@ -1,7 +1,7 @@
 import nc from "next-connect";
 import { isAuth } from "../../../utils/auth";
 import dbConnect, { disconnect } from "../../../utils/db/dbConnect";
-
+import cors from "micro-cors";
 import Category from "../../../Modal/CategoryModal";
 import cloudinary from "cloudinary";
 
@@ -13,16 +13,26 @@ cloudinary.config({
 const handler = nc();
 
 handler.get(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  await cors(req, res);
+
   try {
     const { db } = await dbConnect();
     const categories = await Category.find();
-    res.status(200).json(categories);
+    res.status(200).json({
+      success: true,
+      categories,
+    });
   } catch (error) {
     res.status(500).json(error.message);
   }
 });
 handler.post(async (req, res) => {
-  // await dbConnect();
+  const { db } = await dbConnect();
 
   try {
     let images = [];

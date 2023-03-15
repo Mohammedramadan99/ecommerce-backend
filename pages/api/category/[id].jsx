@@ -1,62 +1,57 @@
-import nc from 'next-connect'
-import db from '../../../utils/db/dbConnect'
-import { isAuth } from '../../../utils/auth'
-import Category from '../../../Modal/CategoryModal'
+import nc from "next-connect";
+import db from "../../../utils/db/dbConnect";
+import { isAuth } from "../../../utils/auth";
+import Category from "../../../Modal/CategoryModal";
+import cors from "micro-cors";
+const handler = nc();
 
-const handler = nc()
+handler.get(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-handler.get(async (req, res) =>
-{
-  await db.connect();
-  try
-  {
-    const category = await Category.findById(req.query.id)
-    res.status(200).json(category)
-  } catch (error)
-  {
-    res.status(500).json(error.message)
+  await cors(req, res);
+
+  await db();
+  try {
+    const category = await Category.findById(req.query.id);
+    res.status(200).json(category);
+  } catch (error) {
+    res.status(500).json(error.message);
   }
-})
+});
 // update
-handler.put(async (req, res) =>
-{
-  await db.connect();
-  try
-  {
+handler.put(async (req, res) => {
+  await db();
+  try {
     let category = await Category.findById(req.query.id); // get the category
 
-    if (!category)
-    {
+    if (!category) {
       res.status(404).json({
         success: false,
-        message: "category not found"
+        message: "category not found",
       });
     }
-    if (req.body.images)
-    {
+    if (req.body.images) {
       // Images Start Here
       let images = [];
 
-      if (typeof req.body.images === "string")
-      {
+      if (typeof req.body.images === "string") {
         images.push(req.body.images);
-      } else
-      {
+      } else {
         images = req.body.images;
       }
 
-      if (images !== undefined)
-      {
+      if (images !== undefined) {
         // Deleting Images From Cloudinary
-        for (let i = 0; i < category.images.length; i++)
-        {
+        for (let i = 0; i < category.images.length; i++) {
           await cloudinary.v2.uploader.destroy(category.images[i].public_id);
         }
 
         const imagesLinks = [];
 
-        for (let i = 0; i < images.length; i++)
-        {
+        for (let i = 0; i < images.length; i++) {
           const result = await cloudinary.v2.uploader.upload(images[i], {
             folder: "categorys",
           });
@@ -81,39 +76,34 @@ handler.put(async (req, res) =>
       success: true,
       category,
     });
-  } catch (err)
-  {
+  } catch (err) {
     return res.status(500).json({ message: err.message });
   }
   await db.disconnect();
-})
+});
 // delete
-handler.delete(async (req, res) =>
-{
-  await db.connect();
-  try
-  {
+handler.delete(async (req, res) => {
+  await db();
+  try {
     const category = await Category.findByIdAndDelete(req.query.id); // get the category
-    const categories = await Category.find()
-    
-    if (!category)
-    {
+    const categories = await Category.find();
+
+    if (!category) {
       res.status(404).json({
         success: false,
         message: "category not found",
       });
     }
-    
+
     res.status(200).json({
       success: true,
       categories,
-      deleted:"category deleted successfully",
+      deleted: "category deleted successfully",
     });
-  } catch (err)
-  {
+  } catch (err) {
     return res.status(500).json({ message: err.message });
   }
   await db.disconnect();
-})
+});
 
-export default handler
+export default handler;

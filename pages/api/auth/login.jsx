@@ -1,45 +1,49 @@
-import nc from 'next-connect'
-import bcrypt from 'bcryptjs'
-import db from '../../../utils/db/dbConnect'
-import cloudinary from "cloudinary"
-import sendToken from '../../../utils/createToken'
-import User from "../../../Modal/userModel"
-import generateToken from '../../../utils/generateToken'
-
+import nc from "next-connect";
+import bcrypt from "bcryptjs";
+import db from "../../../utils/db/dbConnect";
+import cloudinary from "cloudinary";
+import sendToken from "../../../utils/createToken";
+import User from "../../../Modal/userModel";
+import generateToken from "../../../utils/generateToken";
+import cors from "micro-cors";
 cloudinary.config({
-  cloud_name: 'dtmjc8y9z',
-  api_key: '379966828288349',
-  api_secret: 'a41LSvU3XXAJuQOLxorhOVFPauw',
+  cloud_name: "dtmjc8y9z",
+  api_key: "379966828288349",
+  api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
 
 const handler = nc();
 
+handler.post(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  await cors(req, res);
 
-handler.post(async (req, res) =>
-{
-  await db.connect();
+  await db();
   try {
     const { email, password } = req.body;
     //check if user exists
-    console.log("password",password)
-    const userFound = await User.findOne({ email }).select('+password');
-    if (!userFound)
-    {
+    console.log("password", password);
+    const userFound = await User.findOne({ email }).select("+password");
+    if (!userFound) {
       res.status(401).json({
-        message: "email or password not found"
-      })
+        message: "email or password not found",
+      });
     }
-    const comparedPassword = await bcrypt.compare(password, userFound?.password);
-    if (!comparedPassword)
-    {
+    const comparedPassword = await bcrypt.compare(
+      password,
+      userFound?.password
+    );
+    if (!comparedPassword) {
       res.status(401).json({
-        message: "email or password not found"
-      })
+        message: "email or password not found",
+      });
     }
     //check if blocked
-    if (userFound && comparedPassword)
-    {
+    if (userFound && comparedPassword) {
       //Check if password is match
       res.json({
         _id: userFound?._id,
@@ -49,20 +53,17 @@ handler.post(async (req, res) =>
         isAdmin: userFound?.isAdmin,
         token: generateToken(userFound?._id),
         isVerified: userFound?.isAccountVerified,
-        role: userFound?.role
+        role: userFound?.role,
       });
-    } else
-    {
+    } else {
       res.status(401);
       throw new Error("Invalid Login Credentials");
     }
   } catch (err) {
     res.status(404).json({
-      message: err.message
-    })
+      message: err.message,
+    });
   }
   await db.disconnect();
-})
-export default handler
-
-
+});
+export default handler;

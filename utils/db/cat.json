@@ -1,0 +1,86 @@
+[
+  {
+    "_id": "637164fbfd6daaea663d23c5",
+    "title": "burger",
+    "images": [
+      {
+        "public_id": "ecommerce/v1awk3w8v3ttdiavijv2",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1668375803/ecommerce/v1awk3w8v3ttdiavijv2.png",
+        "_id": "637164fbfd6daaea663d23c6"
+      }
+    ],
+    "createdAt": "2022-11-13T21:43:23.964Z",
+    "updatedAt": "2022-11-13T21:43:23.964Z",
+    "__v": 0
+  },
+  {
+    "_id": "6371651cfd6daaea663d23c8",
+    "title": "chicken",
+    "images": [
+      {
+        "public_id": "ecommerce/tnsr6aj1lex11dlbdhuy",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1668375836/ecommerce/tnsr6aj1lex11dlbdhuy.png",
+        "_id": "6371651cfd6daaea663d23c9"
+      }
+    ],
+    "createdAt": "2022-11-13T21:43:56.057Z",
+    "updatedAt": "2022-11-13T21:43:56.057Z",
+    "__v": 0
+  },
+  {
+    "_id": "6371656afd6daaea663d23cb",
+    "title": "mexican food",
+    "images": [
+      {
+        "public_id": "ecommerce/tulk3nrig5zjawphawcl",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1668375914/ecommerce/tulk3nrig5zjawphawcl.png",
+        "_id": "6371656afd6daaea663d23cc"
+      }
+    ],
+    "createdAt": "2022-11-13T21:45:14.184Z",
+    "updatedAt": "2022-11-13T21:45:14.184Z",
+    "__v": 0
+  },
+  {
+    "_id": "63716582fd6daaea663d23ce",
+    "title": "cake",
+    "images": [
+      {
+        "public_id": "ecommerce/e9lfbfo52efb5lgqsgj5",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1668375938/ecommerce/e9lfbfo52efb5lgqsgj5.png",
+        "_id": "63716582fd6daaea663d23cf"
+      }
+    ],
+    "createdAt": "2022-11-13T21:45:38.193Z",
+    "updatedAt": "2022-11-13T21:45:38.193Z",
+    "__v": 0
+  },
+  {
+    "_id": "637165d6fd6daaea663d23d1",
+    "title": "bagels",
+    "images": [
+      {
+        "public_id": "ecommerce/kojfgsytxtinhtxnhy3h",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1668376022/ecommerce/kojfgsytxtinhtxnhy3h.png",
+        "_id": "637165d6fd6daaea663d23d2"
+      }
+    ],
+    "createdAt": "2022-11-13T21:47:02.133Z",
+    "updatedAt": "2022-11-13T21:47:02.133Z",
+    "__v": 0
+  },
+  {
+    "_id": "63d5114185d95f9417b24979",
+    "title": "pizza",
+    "images": [
+      {
+        "public_id": "ecommerce/kkscwg5lu7tc0mbrwe4e",
+        "url": "https://res.cloudinary.com/dtmjc8y9z/image/upload/v1674907969/ecommerce/kkscwg5lu7tc0mbrwe4e.png",
+        "_id": "63d5114185d95f9417b2497a"
+      }
+    ],
+    "createdAt": "2023-01-28T12:12:49.850Z",
+    "updatedAt": "2023-01-28T12:12:49.850Z",
+    "__v": 0
+  }
+]
