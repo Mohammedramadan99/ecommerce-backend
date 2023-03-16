@@ -38,8 +38,24 @@ handler.get(async (req, res) => {
   await cors(req, res);
   try {
     const { db } = await dbConnect();
-    const products = await Product.find();
-    // await AllProducts[...products]
+    const q = req.query;
+    const skip = (q.page - 1) * q.limit;
+
+    const filters = {
+      ...(q.userId && { userId: q.userId }),
+      ...(q.cat && { category: q.cat }),
+      ...((q.minPrice || q.maxPrice) && {
+        price: {
+          ...(q.minPrice && { $gt: q.minPrice }),
+          ...(q.maxPrice && { $lt: q.maxPrice }),
+        },
+      }),
+      ...(q.minRating && { ratings: { $gte: q.minRating } }),
+
+      ...(q.search && { name: { $regex: q.search, $options: "i" } }),
+    };
+    const products = await Product.find(filters).skip(skip).limit(q.limit);
+
     res.status(201).json({
       success: true,
       products,

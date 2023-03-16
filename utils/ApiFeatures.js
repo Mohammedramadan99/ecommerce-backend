@@ -30,7 +30,7 @@ class APIFeatures {
     let filterQuery = {};
     const fieldsLength = Object.keys(queryCopy).length;
 
-    console.log(queryCopy); // ! console's result  => { 'ratings[gte]': '5', 'price[gte]': '22' }
+    console.log({ queryCopy }); // ! console's result  => { 'ratings[gte]': '5', 'price[gte]': '22' }
 
     for (let i = 0; i < fieldsLength; i++) {
       let queryStr = JSON.stringify(Object.keys(queryCopy)[i]);
@@ -48,6 +48,7 @@ class APIFeatures {
           ...filterQuery,
           [filterField]: { [`$${filterOperator}`]: fieldValue },
         };
+        // console.log({ filterQuery });
       } else {
         filterQuery = {
           ...filterQuery,
@@ -55,7 +56,7 @@ class APIFeatures {
         };
       }
     }
-    console.log(filterQuery); // ! console's result => { ratings: { '$gte': '5' }, price: { '$gte': '5' } }
+    console.log({ filterQuery }); // ! console's result => { ratings: { '$gte': '5' }, price: { '$gte': '5' } }
     this.query = this.query.find(filterQuery);
     return this;
   }
@@ -79,7 +80,6 @@ class APIFeatures {
     }
     this.query = this.query.skip(skip).limit(limit);
     this.paginationResult = pagination;
-    console.log(this.paginationResult);
     return this;
   }
 }
