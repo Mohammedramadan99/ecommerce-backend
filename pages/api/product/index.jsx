@@ -38,6 +38,7 @@ handler.get(async (req, res) => {
   await cors(req, res);
   try {
     const { db } = await dbConnect();
+
     const q = req.query;
     const skip = (q.page - 1) * q.limit;
 
@@ -54,11 +55,12 @@ handler.get(async (req, res) => {
 
       ...(q.search && { name: { $regex: q.search, $options: "i" } }),
     };
-    const products = await Product.find(filters).skip(skip).limit(q.limit);
-
+    const products = await Product.find(filters).skip(skip).limit(2);
+    const totalItems = await Product.countDocuments(filters); // i passed filters to count the total number of items that match the filter criteria
     res.status(201).json({
       success: true,
       products,
+      totalItems,
     });
   } catch (err) {
     res.status(404).json({
