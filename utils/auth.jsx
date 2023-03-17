@@ -4,7 +4,7 @@ import db from '../utils/db/dbConnect'
 export const isAuth = async (req, res, next) => {
   try
   {
-    await db.connect()
+    const { db } = await dbConnect();
     let token = req.headers.authorization.split(" ")[1];
 
     if (!token) {
