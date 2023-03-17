@@ -1,9 +1,21 @@
 import jwt from "jsonwebtoken";
 import User from "../Modal/userModel";
 import db from '../utils/db/dbConnect'
+import Cors from "micro-cors";
+
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
 export const isAuth = async (req, res, next) => {
   try
   {
+      // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  await cors(req, res);
     const { db } = await dbConnect();
     let token = req.headers.authorization.split(" ")[1];
 
