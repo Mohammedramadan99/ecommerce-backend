@@ -55,7 +55,7 @@ handler.get(async (req, res) => {
 
       ...(q.search && { name: { $regex: q.search, $options: "i" } }),
     };
-    const products = await Product.find(filters).skip(skip).limit(2);
+    const products = await Product.find(filters).skip(skip).limit(q?.limit);
     const totalItems = await Product.countDocuments(filters); // i passed filters to count the total number of items that match the filter criteria
     res.status(201).json({
       success: true,
