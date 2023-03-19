@@ -10,12 +10,12 @@ cloudinary.config({
   api_key: "379966828288349",
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
+const handler = nc();
 
 const cors = Cors({
   origin: "*",
   methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
 });
-const handler = nc();
 
 handler.options(async (req, res) => {
   // Set the CORS headers

@@ -9,6 +9,7 @@ import cloudinary from "cloudinary";
 import Product from "../../../Modal/ProductsModel";
 import APIFeatures from "../../../utils/ApiFeatures";
 import mongoose from "mongoose";
+const handler = nc();
 
 const cors = Cors({
   origin: "*",
@@ -32,8 +33,6 @@ cloudinary.config({
   cloud_name: "dtmjc8y9z",
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
-
-const handler = nc();
 
 // get all products
 handler.get(async (req, res) => {
