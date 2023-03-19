@@ -18,7 +18,7 @@ const cors = Cors({
 });
 const handler = nc();
 
-handler.post(async (req, res) => {
+handler.options(async (req, res) => {
   // Set the CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -29,8 +29,21 @@ handler.post(async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
 
   await cors(req, res);
+  res.status(200).end();
+});
 
+handler.post(async (req, res) => {
   await db();
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  await cors(req, res);
   try {
     const { email, password } = req.body;
     //check if user exists
