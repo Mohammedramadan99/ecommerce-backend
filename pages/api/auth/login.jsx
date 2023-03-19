@@ -2,7 +2,6 @@ import nc from "next-connect";
 import bcrypt from "bcryptjs";
 import db from "../../../utils/db/dbConnect";
 import cloudinary from "cloudinary";
-import sendToken from "../../../utils/createToken";
 import User from "../../../Modal/userModel";
 import generateToken from "../../../utils/generateToken";
 import Cors from "micro-cors";

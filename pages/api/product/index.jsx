@@ -46,9 +46,8 @@ handler.get(async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
 
   await cors(req, res);
+  const { db } = await dbConnect();
   try {
-    const { db } = await dbConnect();
-
     const q = req.query;
     const skip = (q.page - 1) * q.limit;
 
