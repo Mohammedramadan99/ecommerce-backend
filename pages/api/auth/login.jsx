@@ -50,7 +50,7 @@ handler.post(async (req, res) => {
     console.log("password", password);
     const userFound = await User.findOne({ email }).select("+password");
     if (!userFound) {
-      res.status(401).json({
+      res.status(500).json({
         message: "email or password not found",
       });
     }
@@ -59,7 +59,7 @@ handler.post(async (req, res) => {
       userFound?.password
     );
     if (!comparedPassword) {
-      res.status(401).json({
+      res.status(500).json({
         message: "email or password not found",
       });
     }

@@ -3,7 +3,8 @@ import nc from "next-connect";
 import db from "../../../utils/db/dbConnect";
 import cloudinary from "cloudinary";
 import User from "../../../Modal/userModel";
-import cors from "cors";
+import Cors from "cors";
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -11,16 +12,35 @@ cloudinary.config({
 });
 
 const handler = nc();
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
 
-handler.post(async (req, res) => {
+handler.options(async (req, res) => {
   // Set the CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
   await cors(req, res);
-
+  res.status(200).end();
+});
+handler.post(async (req, res) => {
   await db();
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  await cors(req, res);
   try {
     const myCloud = await cloudinary.v2.uploader.upload(req.body?.images[0], {
       folder: "avatars",

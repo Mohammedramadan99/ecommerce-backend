@@ -1,10 +1,6 @@
 import nc from "next-connect";
 import Cors from "micro-cors";
 
-const cors = Cors({
-  origin: "*",
-  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
-});
 import dbConnect from "../../../utils/db/dbConnect";
 import { disconnect } from "../../../utils/db/dbConnect";
 
@@ -13,27 +9,41 @@ import cloudinary from "cloudinary";
 import Product from "../../../Modal/ProductsModel";
 import APIFeatures from "../../../utils/ApiFeatures";
 import mongoose from "mongoose";
-// import AllProducts from '../../../components/db'
+
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
+
+handler.options(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  await cors(req, res);
+  res.status(200).end();
+});
 cloudinary.config({
   cloud_name: "dtmjc8y9z",
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "50mb",
-    },
-  },
-};
 const handler = nc();
 
 // get all products
 handler.get(async (req, res) => {
-  // Set the CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
   await cors(req, res);
   try {
