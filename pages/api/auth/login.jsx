@@ -64,6 +64,5 @@ handler.post(async (req, res) => {
       message: err.message,
     });
   }
-  await db.disconnect();
 });
 export default handler;
