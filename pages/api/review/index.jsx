@@ -3,7 +3,7 @@ import Product from "../../../Modal/ProductsModel";
 import dbConnect from "../../../utils/db/dbConnect";
 import { isAuth } from "../../../utils/auth";
 import Notification from "../../../Modal/NotificationsModal";
-import cors from "cors";
+import cors from "micro-cors";
 const handler = nc();
 
 // configure CORS middleware to allow requests from your frontend domain

@@ -5,13 +5,17 @@ import cloudinary from "cloudinary";
 import sendToken from "../../../utils/createToken";
 import User from "../../../Modal/userModel";
 import generateToken from "../../../utils/generateToken";
-import cors from "micro-cors";
+import Cors from "micro-cors";
 cloudinary.config({
   cloud_name: "dtmjc8y9z",
   api_key: "379966828288349",
   api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
 });
 
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
 const handler = nc();
 
 handler.post(async (req, res) => {
