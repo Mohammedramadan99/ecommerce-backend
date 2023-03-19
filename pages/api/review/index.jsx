@@ -3,20 +3,27 @@ import Product from "../../../Modal/ProductsModel";
 import dbConnect from "../../../utils/db/dbConnect";
 import { isAuth } from "../../../utils/auth";
 import Notification from "../../../Modal/NotificationsModal";
-import cors from "micro-cors";
+
 const handler = nc();
 
-// configure CORS middleware to allow requests from your frontend domain
-const corsOptions = {
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-  preflightContinue: true,
-};
 handler
-  .use(cors(corsOptions))
   .use(isAuth)
+  .use(async (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    if (req.method === "OPTIONS") {
+      return res.status(200).end();
+    }
+    await next();
+  })
   .put(async (req, res) => {
     const { db } = await dbConnect();
 
@@ -25,18 +32,13 @@ handler
     console.log(user);
     const review = {
       user: { ...user },
-      name: req.user.name,
+      name: req?.user?.name,
       rating: Number(rating),
       comment,
     };
     // console.log(review)
     const product = await Product.findById(productId); // find the product
-    const notificationData = {
-      user,
-      title: `${user.name} reviewed  ${product?.name} with (${review.rating}) stars`,
-      content: `${review.comment}`,
-    };
-    const notification = await Notification.create(notificationData);
+    // const notification = await Notification.create(notificationData);
     const isReviewed = product.reviews.find(
       (rev) => rev?.user?._id === req.user._id.toString()
     ); // product OLD review before the NEW review
@@ -75,4 +77,5 @@ handler
       success: true,
     });
   });
+
 export default handler;
