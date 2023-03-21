@@ -1,11 +1,9 @@
 import nc from "next-connect";
-import Product from "../../../Modal/ProductsModel";
 // import db from '../../../utils/db/dbConnect'
 import { isAuth } from "../../../utils/auth";
 import ReviewUs from "../../../Modal/reviewUs";
-import Notification from "../../../Modal/NotificationsModal";
 import dbConnect from "../../../utils/db/dbConnect";
-import Cors from "cors";
+import Cors from "micro-cors";
 const handler = nc();
 const cors = Cors({
   origin: "*",
@@ -66,8 +64,6 @@ handler.use(isAuth).post(async (req, res) => {
     const review = req.body;
     const reviewData = { user, ...review };
     const result = await ReviewUs.create(reviewData);
-    // const notification = await Notification.create(notificationData)
-
     res.status(200).json({
       success: true,
       review: result,
