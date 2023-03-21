@@ -5,7 +5,7 @@ import { isAuth } from "../../../utils/auth";
 import ReviewUs from "../../../Modal/reviewUs";
 import Notification from "../../../Modal/NotificationsModal";
 import dbConnect from "../../../utils/db/dbConnect";
-import cors from "cors";
+import Cors from "cors";
 const handler = nc();
 const cors = Cors({
   origin: "*",
