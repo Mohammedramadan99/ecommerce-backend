@@ -3,12 +3,12 @@ import nc from "next-connect";
 import db from "../../../utils/db/dbConnect";
 import cloudinary from "cloudinary";
 import User from "../../../Modal/userModel";
-import Cors from "cors";
+import Cors from "micro-cors";
 
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 
 const handler = nc();
@@ -30,6 +30,7 @@ handler.options(async (req, res) => {
   await cors(req, res);
   res.status(200).end();
 });
+
 handler.post(async (req, res) => {
   await db();
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -54,10 +55,10 @@ handler.post(async (req, res) => {
       return res.status(400).json({ message: "the email already exists" });
 
     // ?SECOND => "check password" case password less than 6ch
-    if (password.length < 6)
-      return res
-        .status(400)
-        .json({ message: "password is at least 6 characters long" });
+    // if (password.length < 6)
+    //   return res
+    //     .status(400)
+    //     .json({ message: "password is at least 6 characters long" });
     // ?third => case the user is new -- we will collect its info in a constant
     console.log(req.body);
     // const user = await User.create(req.body);
@@ -74,9 +75,22 @@ handler.post(async (req, res) => {
       user,
     });
   } catch (err) {
-    res.status(404).json({
+    // Handle validation errors
+    if (err.name === "ValidationError") {
+      const validationErrors = {};
+      for (let field in err.errors) {
+        validationErrors[field] = err.errors[field].message;
+      }
+      return res.status(400).json({
+        success: false,
+        message: "Validation error",
+        errors: validationErrors,
+      });
+    }
+
+    res.status(400).json({
       success: false,
-      message: err.message,
+      message: err?.message,
     });
   }
 });

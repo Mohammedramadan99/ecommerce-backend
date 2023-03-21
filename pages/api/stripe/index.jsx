@@ -1,9 +1,29 @@
 import Stripe from "stripe";
 import nc from "next-connect";
-import cors from "micro-cors";
+import Cors from "micro-cors";
 import db from "../../../utils/db/dbConnect";
 
 const handler = nc();
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
+
+handler.options(async (req, res) => {
+  // const { db } = await dbConnect();
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  await cors(req, res);
+  res.status(200).end();
+});
+
 const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY);
 
 handler.post(async (req, res) => {

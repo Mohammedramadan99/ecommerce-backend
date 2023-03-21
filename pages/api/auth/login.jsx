@@ -5,10 +5,11 @@ import cloudinary from "cloudinary";
 import User from "../../../Modal/userModel";
 import generateToken from "../../../utils/generateToken";
 import Cors from "micro-cors";
+
 cloudinary.config({
-  cloud_name: "dtmjc8y9z",
-  api_key: "379966828288349",
-  api_secret: "a41LSvU3XXAJuQOLxorhOVFPauw",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
 const handler = nc();
 
@@ -49,7 +50,7 @@ handler.post(async (req, res) => {
     console.log("password", password);
     const userFound = await User.findOne({ email }).select("+password");
     if (!userFound) {
-      res.status(500).json({
+      res.status(403).json({
         message: "email or password not found",
       });
     }
@@ -58,7 +59,7 @@ handler.post(async (req, res) => {
       userFound?.password
     );
     if (!comparedPassword) {
-      res.status(500).json({
+      res.status(403).json({
         message: "email or password not found",
       });
     }
