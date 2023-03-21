@@ -7,7 +7,24 @@ import Notification from "../../../Modal/NotificationsModal";
 import dbConnect from "../../../utils/db/dbConnect";
 import cors from "cors";
 const handler = nc();
+const cors = Cors({
+  origin: "*",
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+});
 
+handler.options(async (req, res) => {
+  // Set the CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+
+  await cors(req, res);
+  res.status(200).end();
+});
 handler.get(async (req, res) => {
   // Set the CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -32,25 +49,23 @@ handler.get(async (req, res) => {
 });
 
 handler.use(isAuth).post(async (req, res) => {
+  const { db } = await dbConnect();
   // Set the CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST,PUT, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", true);
 
   await cors(req, res);
-
-  const { db } = await dbConnect();
 
   try {
     const user = req.user;
     const review = req.body;
     const reviewData = { user, ...review };
     const result = await ReviewUs.create(reviewData);
-    const notificationData = {
-      user,
-      title: `${user.name} reviewed our website with ${review.rating} stars `,
-      content: `${review.comment}`,
-    };
     // const notification = await Notification.create(notificationData)
 
     res.status(200).json({
